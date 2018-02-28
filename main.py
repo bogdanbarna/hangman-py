@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
-""" Hangman in Python 3.x with ncurses """
+""" Hangman in Python (2.7.x upwards) with ncurses """
 
 from curses import wrapper
 import random
 import re
 
 
+#TODO Streamline ASCII imgs
 def display_stage(stage, stdscr):
     """ Display ASCII hangman """
     with open('hangmans/{}.txt'.format(stage), 'r') as hangman_stage:
@@ -25,7 +26,7 @@ def get_secret():
 
 def unveil_secret(unveiled_secret, secret, guess):
     """ Unveil secret word as user guesses correctly """
-    for idx, element in enumerate(secret):
+    for idx, _ in enumerate(secret):
         if secret[idx] == guess:
             unveiled_secret[idx] = guess
 
@@ -33,18 +34,22 @@ def unveil_secret(unveiled_secret, secret, guess):
 
 def main(stdscr):
     """ Main loop """
-    #stdscr.clear()
     turn = 0
     max_chances = 6
     chances_left = max_chances
     secret = get_secret()
     consumed_secret = secret
-    unveiled_secret = ['X' for it in range(len(secret))]
+    unveiled_secret = ['#' for _ in range(len(secret))]
     used_guesses = []
 
     while chances_left:
         stdscr.clear()
-        stdscr.addstr('Turn: {}. Chances left: {}. Guesses: {}\n'.format(turn+1, chances_left, used_guesses))
+        announcement = 'Turn: {}. Chances left: {}. Guesses: {}\n'.format(
+            turn + 1,
+            chances_left,
+            used_guesses
+        )
+        stdscr.addstr(announcement)
         unveiled_secret_str = ''.join(elem for elem in unveiled_secret)
         stdscr.addstr("Secret word: {}\n".format(unveiled_secret_str))
 
